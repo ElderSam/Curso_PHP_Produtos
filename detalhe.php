@@ -7,16 +7,20 @@
     }
 
     // Consulta ao banco de dados
-    $consulta = "SELECT * ";
-    $consulta .= "FROM produtos ";
-    $consulta .= "WHERE produtoID = {$produto_id} ";
-    $detalhe    = mysqli_query($conecta,$consulta);
+    $sql = "SELECT * ";
+    $sql .= "FROM produtos ";
+    $sql .= "WHERE produtoID = {$produto_id} ";
+    $consulta = $pdo->prepare($sql);
+    $consulta->execute();
+    
 
     // Testar erro
-    if ( !$detalhe ) {
+    if ( !$consulta ) {
         die("Falha no Banco de dados");
+
     } else {
-        $dados_detalhe = mysqli_fetch_assoc($detalhe);
+
+        $dados_detalhe = $consulta->fetch(PDO::FETCH_ASSOC);
         $produtoID      = $dados_detalhe["produtoID"];
         $nomeproduto    = $dados_detalhe["nomeproduto"];
         $descricao      = $dados_detalhe["descricao"];
@@ -61,8 +65,3 @@
         <?php include_once("_incluir/rodape.php"); ?>
     </body>
 </html>
-
-<?php
-    // Fechar conexao
-    mysqli_close($conecta);
-?>
